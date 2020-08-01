@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rlt_info"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:id="@+id/tv_storage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Storage"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_sdcard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SD card"
+            android:layout_marginEnd="70dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentEnd="true"/>
+
+        <TextView
+            android:id="@+id/tv_info_storage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9.43/9.80"
+            android:layout_below="@+id/tv_storage"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="70dp"/>
+
+        <TextView
+            android:id="@+id/tv_info_sdcard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9.43/9.80"
+            android:layout_below="@+id/tv_sdcard"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_alignStart="@+id/tv_sdcard"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorBackground"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@color/colorBackground"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_current_folder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlt_info"
+        android:textSize="15sp"
+        android:paddingStart="15dp"/>
+
+    <ListView
+        android:id="@+id/lv_main"
+        android:layout_below="@+id/tv_current_folder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"/>
+
+</RelativeLayout>
