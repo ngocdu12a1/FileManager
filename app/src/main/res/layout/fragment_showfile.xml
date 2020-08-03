@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SD card"
-            android:layout_marginEnd="70dp"
+            android:layout_marginEnd="80dp"
             android:layout_marginTop="10dp"
             android:layout_alignParentEnd="true"/>
 
@@ -57,6 +57,15 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@color/colorBackground"/>
+
+        <ImageView
+            android:id="@+id/imv_popup_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_popup_menu"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"/>
 
     </RelativeLayout>
 

@@ -12,6 +12,7 @@ public class FileInfo {
     private String time;
     private String path;
     private ImageView icon;
+    private long time_raw;
 
     public FileInfo(File file) {
        this.file = file;
@@ -22,6 +23,7 @@ public class FileInfo {
 
        this.path = file.getAbsolutePath();
        this.size = getSizeFile(file);
+       this.time_raw = file.lastModified();
     }
 
 
@@ -66,6 +68,10 @@ public class FileInfo {
         return icon;
     }
 
+    public long getTime_raw() {
+        return time_raw;
+    }
+
     public void setFile(File file) {
         this.file = file;
     }
@@ -91,5 +97,7 @@ public class FileInfo {
         this.time = time;
     }
 
-
+    public void setTime_raw(long time_raw) {
+        this.time_raw = time_raw;
+    }
 }
