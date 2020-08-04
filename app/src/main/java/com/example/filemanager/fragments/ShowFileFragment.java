@@ -1,13 +1,17 @@
 package com.example.filemanager.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -39,6 +43,7 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
     private FileAdaper mFileAdaper;
     private List<FileInfo> items;
     private File rootFile;
+    private EditText input;
 
     private ListView mListView;
     private TextView mTextViewCurrentFolder;
@@ -168,6 +173,7 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
                 showPopupMenuSort(viewClick);
                 break;
             case R.id.menu_popup_create:
+                showCreateFolderAlertDialog();
                 break;
             case R.id.menu_popup_sort_name:
                 sortItem(R.id.menu_popup_sort_name);
@@ -177,6 +183,42 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
                 break;
         }
         return true;
+    }
+
+    private void showCreateFolderAlertDialog(){
+        // set up input new name
+        input = new EditText(getContext());
+        final AlertDialog.Builder inputNewFolder = new AlertDialog.Builder(getContext());
+        inputNewFolder.setTitle("Create Folder");
+        inputNewFolder.setCancelable(true);
+        inputNewFolder.setMessage("Enter name new folder:");
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        inputNewFolder.setView(input);
+
+        // Set up the buttons
+        inputNewFolder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newFolder = input.getText().toString();
+                File directory  = new File(rootPath, newFolder);
+                if(directory.mkdirs()){
+                    Toast.makeText(getContext(), "make dir successfully", Toast.LENGTH_SHORT).show();
+                    items = getSubFolder(rootPath);
+                    mFileAdaper.updateData(items);
+                }
+                else {
+                    Toast.makeText(getContext(), "make dir failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        inputNewFolder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        inputNewFolder.show();
     }
 
     private void sortItem(int cmd){
@@ -205,4 +247,6 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
             mFileAdaper.updateData(items);
         }
     }
+
+
 }
