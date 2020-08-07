@@ -1,9 +1,11 @@
 package com.example.filemanager.fragments;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.InputType;
@@ -14,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -118,6 +121,11 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
+
+    /****************************************
+     * Handle short click item in list view *
+     ****************************************/
+
     // set event short click list view
     private void setOnClickListView(){
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -127,32 +135,41 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
                 String nameFolder = items.get(position).getName();
                 rootFile = items.get(position).getFile();
 
+                // if file is folder -> open folder
                 if(rootFile.isDirectory()){
                     rootPath = rootPath + "/" + nameFolder;
                     mTextViewCurrentFolder.setText(rootPath);
                     items = getSubFolder(rootPath);
                     mFileAdapter.updateData(items);
                 }
+                // if file is file -> using intent to open file
                 else {
-                    // Get URI and MIME type of file
-                    Uri uri = Uri.parse("file://"+rootFile.getAbsolutePath());
-                    String mime = URLConnection.guessContentTypeFromName(rootFile.getName());
 
-                    // Open file with user selected app
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.setDataAndType(uri, mime);
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(intent);
+                    Uri uri;
+                   if(Build.VERSION.SDK_INT < 24){
+                        uri = FileProvider.getUriForFile(getContext(),
+                               getContext().getApplicationContext().getPackageName() + ".provider",
+                               rootFile);
+                   }
+                   else {
+                       uri = Uri.fromFile(rootFile);
+                   }
+
+                   Intent intent = new Intent(Intent.ACTION_VIEW);
+                   String type =  URLConnection.guessContentTypeFromName(rootFile.getName());
+                   
+                   intent.setDataAndType(uri, type);
+                   intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                   getContext().startActivity(intent);
                 }
             }
         });
     }
 
 
-    /*
-    * Handle long click item and show context menu
-    */
+    /***********************************************
+    * Handle long click item and show context menu *
+    ************************************************/
 
     // set event long click list view
     private void setOnLongClickListView(){
@@ -265,9 +282,10 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
     }
 
 
-    /*
-    * show popup menu and handle event
-    */
+
+    /***********************************
+    * show popup menu and handle event *
+    ************************************/
 
     // show popup menu (sort and create folder)
     private void showPopupMenu(View v){
