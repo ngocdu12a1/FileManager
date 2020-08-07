@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.filemanager.models.FileInfo;
@@ -46,15 +47,16 @@ public class FileAdaper extends BaseAdapter {
 
         FileInfo file = items.get(position);
 
+        ImageView mImageViewIcon   = view.findViewById(R.id.imv_file_icon);
         TextView mTextViewNameFile = view.findViewById(R.id.tv_file_name);
         TextView mTextViewSizeFile = view.findViewById(R.id.tv_file_size);
         TextView mTextViewTimeFile = view.findViewById(R.id.tv_file_time);
 
-        Log.d(TAG, "getView: " + file.getSize());
+
         mTextViewNameFile.setText(file.getName());
         mTextViewSizeFile.setText(file.getSize());
         mTextViewTimeFile.setText(file.getTime());
-
+        mImageViewIcon.setImageResource(file.getIcon());
         return view;
     }
 }

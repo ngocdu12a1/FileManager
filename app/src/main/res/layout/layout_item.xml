@@ -18,17 +18,18 @@
         android:layout_toEndOf="@+id/imv_file_icon"
         android:layout_marginStart="10dp"
         android:layout_alignTop="@+id/imv_file_icon"
-        android:textSize="24sp"
+        android:textSize="18sp"
         android:layout_toStartOf="@id/imv_forward"
+        android:maxLines="1"
         android:text="Android"/>
 
     <TextView
         android:id="@+id/tv_file_size"
-        android:layout_width="30dp"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/tv_file_name"
         android:layout_below="@+id/tv_file_name"
-        android:textSize="7sp"
+        android:textSize="10sp"
         android:text="8384MB"/>
 
     <TextView
@@ -37,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_file_name"
         android:layout_toRightOf="@+id/tv_file_size"
-        android:textSize="7sp"
+        android:textSize="10sp"
         android:text="34/67/1009"/>
 
     <ImageView
