@@ -37,34 +37,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // request permission read and write storage
-      //  requestPermission();
-
-        // find view and set click
-        findView();
-        setClick();
-
-        // init fragment
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction f = fm.beginTransaction();
-        f.replace(R.id.fl_activity, new ShowFileFragment());
-        f.commit();
-
-        Log.d(TAG, "onCreate: continue after request");
+        requestPermission();
     }
 
-    private void startActivityAfterRequestPermission(){
-        // find view and set click
-        findView();
-        setClick();
-
-        // init fragment
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction f = fm.beginTransaction();
-        f.replace(R.id.fl_activity, new ShowFileFragment());
-        f.commit();
-    }
     @Override
     public void onBackPressed() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
@@ -104,14 +79,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void requestPermission(){
-        Log.d(TAG, "requestPermission: start request");
+
         int permission_write  = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int permission_read  = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
-        if(permission_read == PackageManager.PERMISSION_DENIED)
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+            || (permission_read == PackageManager.PERMISSION_GRANTED
+                && permission_write == PackageManager.PERMISSION_GRANTED)){
+            startActivityAfterRequestPermission();
+        }
+        else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_CODE_STORAGE);
+        }
+
+    }
+
+    private void startActivityAfterRequestPermission(){
+        // find view and set click
+        findView();
+        setClick();
+
+        // init fragment
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction f = fm.beginTransaction();
+        f.replace(R.id.fl_activity, new ShowFileFragment());
+        f.commit();
     }
 
     @Override
@@ -126,7 +121,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
            }
 
            if(ok){
-               startActivityAfterRequestPermission();
+              startActivityAfterRequestPermission();
+           }
+           else {
+               closeNow();
            }
         }
     }

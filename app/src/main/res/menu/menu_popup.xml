@@ -5,5 +5,5 @@
         android:title="Sort by"/>
     <item
         android:id="@+id/menu_popup_create"
-        android:title="Crete folder"/>
+        android:title="Create folder"/>
 </menu>
