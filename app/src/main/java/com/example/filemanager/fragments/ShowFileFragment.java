@@ -131,7 +131,6 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "short click", Toast.LENGTH_SHORT).show();
                 String nameFolder = items.get(position).getName();
                 rootFile = items.get(position).getFile();
 
@@ -146,7 +145,7 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
                 else {
 
                     Uri uri;
-                   if(Build.VERSION.SDK_INT < 24){
+                   if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
                         uri = FileProvider.getUriForFile(getContext(),
                                getContext().getApplicationContext().getPackageName() + ".provider",
                                rootFile);
@@ -160,7 +159,14 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
                    
                    intent.setDataAndType(uri, type);
                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                   getContext().startActivity(intent);
+
+                   try {
+                       getContext().startActivity(intent);
+                   }
+                   catch (Exception e){
+                       Toast.makeText(getContext(), "Can't open this file", Toast.LENGTH_SHORT).show();
+                       e.printStackTrace();
+                   }
                 }
             }
         });
