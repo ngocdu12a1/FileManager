@@ -1,7 +1,7 @@
 package com.example.filemanager.fragments;
 
 import android.app.AlertDialog;
-import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,17 +34,22 @@ import com.example.filemanager.R;
 import com.example.filemanager.adapters.FileAdaper;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 public class ShowFileFragment extends Fragment implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
     private String TAG = this.getClass().getName();
+
+    private String pathToInternalStorage;
+    private String pathToExternalStorage;
 
     private View view;
     private String rootPath;
@@ -68,10 +72,15 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
         view = inflater.inflate(R.layout.fragment_showfile, container, false);
         findView();
 
+
         // get root path Internal storage
+
         rootFile = Environment.getExternalStorageDirectory();
-        rootPath = rootFile.getAbsolutePath();
+        pathToInternalStorage = rootPath = rootFile.getAbsolutePath();
         items = getSubFolder(rootPath);
+
+        // get path to sd card
+        pathToExternalStorage = getExternalSdCardPath();
 
         // set text view current folder
         mTextViewCurrentFolder.setText(rootPath);
@@ -91,7 +100,8 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
 
     // return parent folder when click back button
     public boolean onBackPress(){
-        if(rootPath.compareTo("/storage/emulated/0") == 0){
+        if(rootPath.compareTo(pathToInternalStorage) == 0
+            || rootPath.compareTo(pathToExternalStorage) == 0){
             return false;
         }
         else {
@@ -111,13 +121,17 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
         mImageViewPopupMenu = view.findViewById(R.id.imv_popup_menu);
 
         mImageViewPopupMenu.setOnClickListener(this);
+        mTextViewCurrentFolder.setOnClickListener(this);
     }
 
     // implement View.OnClickListener's method
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.imv_popup_menu){
-            showPopupMenu(v);
+            showPopupMenuSortAndCreate(v);
+        }
+        if(v.getId() == R.id.tv_current_folder){
+            showPopupMenuChooseStorage(v);
         }
     }
 
@@ -145,7 +159,7 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
                 else {
 
                     Uri uri;
-                   if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                   if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                         uri = FileProvider.getUriForFile(getContext(),
                                getContext().getApplicationContext().getPackageName() + ".provider",
                                rootFile);
@@ -294,7 +308,7 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
     ************************************/
 
     // show popup menu (sort and create folder)
-    private void showPopupMenu(View v){
+    private void showPopupMenuSortAndCreate(View v){
         viewClick = v;
         PopupMenu popup = new PopupMenu(getContext(), v);
         popup.inflate(R.menu.menu_popup);
@@ -338,26 +352,6 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    // handle popup menu click
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.menu_popup_sort_item:
-                showPopupMenuSort(viewClick);
-                break;
-            case R.id.menu_popup_create:
-                showCreateFolderAlertDialog();
-                break;
-            case R.id.menu_popup_sort_name:
-                sortItem(R.id.menu_popup_sort_name);
-                break;
-            case R.id.menu_popup_sort_date:
-                sortItem(R.id.menu_popup_sort_date);
-                break;
-        }
-        return true;
-    }
-
     // show alert dialog to create folder
     private void showCreateFolderAlertDialog(){
         // set up input new name
@@ -395,7 +389,55 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
         inputNewFolder.show();
     }
 
+    /*****************************************************
+     * show popup menu select internal or external storage
+    * ****************************************************/
 
+    private void showPopupMenuChooseStorage(View v){
+        PopupMenu popup = new PopupMenu(getContext(), v);
+        popup.inflate(R.menu.menu_popup_storage);
+        popup.setOnMenuItemClickListener(this);
+        popup.show();
+    }
+
+
+    // handle popup menu click
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_popup_sort_item:
+                showPopupMenuSort(viewClick);
+                break;
+            case R.id.menu_popup_create:
+                showCreateFolderAlertDialog();
+                break;
+            case R.id.menu_popup_sort_name:
+                sortItem(R.id.menu_popup_sort_name);
+                break;
+            case R.id.menu_popup_sort_date:
+                sortItem(R.id.menu_popup_sort_date);
+                break;
+            case R.id.menu_popup_external_storage:
+                
+                if(pathToExternalStorage == null){
+                    Toast.makeText(getContext(), "Sd Card didn't find", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    rootPath = pathToExternalStorage;
+                    mTextViewCurrentFolder.setText(rootPath);
+                    items = getSubFolder(rootPath);
+                    mFileAdapter.updateData(items);
+                }
+                break;
+            case R.id.menu_popup_internal_storage:
+                rootPath = pathToInternalStorage;
+                items = getSubFolder(rootPath);
+                mFileAdapter.updateData(items);
+                mTextViewCurrentFolder.setText(rootPath);
+                break;
+        }
+        return true;
+    }
 
     // get all subfolder of root path
     private List<FileInfo> getSubFolder(String rootPath){
@@ -411,5 +453,16 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
         }
 
         return items;
+    }
+
+    private String getExternalSdCardPath() {
+        File storage = new File("/storage");
+
+        for(File f: storage.listFiles()){
+            String name = f.getName();
+            if(name.contains("-"))
+                return f.getAbsolutePath();
+        }
+        return null;
     }
 }

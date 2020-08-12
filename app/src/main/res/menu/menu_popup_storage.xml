@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_popup_internal_storage"
+        android:title="Internal storage"/>
+    <item
+        android:id="@+id/menu_popup_external_storage"
+        android:title="SD card"/>
+</menu>
