@@ -418,7 +418,7 @@ public class ShowFileFragment extends Fragment implements View.OnClickListener, 
                 sortItem(R.id.menu_popup_sort_date);
                 break;
             case R.id.menu_popup_external_storage:
-                
+
                 if(pathToExternalStorage == null){
                     Toast.makeText(getContext(), "Sd Card didn't find", Toast.LENGTH_SHORT).show();
                 }
