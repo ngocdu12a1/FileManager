@@ -9,3 +9,4 @@ hello from branch train
 >>>>>>> feature/train
 
 test.1
+test.2
