@@ -2,4 +2,8 @@ hello
 xin chao
 cac ban
 
+<<<<<<< HEAD
 branch's created
+=======
+hello from branch train
+>>>>>>> feature/train
