@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.filemanager.R;
-import com.example.filemanager.fragments.SearchFragment;
 import com.example.filemanager.fragments.ShowFileFragment;
 
 import java.util.List;
@@ -62,16 +61,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v){
         if(v.getId() == R.id.imv_folder){
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction f = fm.beginTransaction();
-            f.replace(R.id.fl_activity, new ShowFileFragment());
-            f.commit();
+            Toast.makeText(this, "click folder", Toast.LENGTH_SHORT).show();
         }
         else if(v.getId() == R.id.imv_search){
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction f = fm.beginTransaction();
-            f.replace(R.id.fl_activity, new SearchFragment());
-            f.commit();
+            Toast.makeText(this, "click search", Toast.LENGTH_SHORT).show();
         }
     }
 
